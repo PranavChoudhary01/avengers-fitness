@@ -1,0 +1,2047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Avengers Fitness">
+<meta name="theme-color" content="#0A0A0F">
+<meta name="description" content="Avengers Fitness Unisex Gym Management System">
+<title>Avengers Fitness - Unisex Gym Management</title>
+<link id="manifest-link" rel="manifest">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script>
+// Inline manifest — works as single file on GitHub Pages
+(function(){
+  const manifest = {
+    name: "Avengers Fitness",
+    short_name: "AvengersFit",
+    description: "Avengers Fitness Unisex Gym Management",
+    start_url: "./",
+    display: "standalone",
+    orientation: "portrait",
+    background_color: "#0A0A0F",
+    theme_color: "#0A0A0F",
+    icons: [
+      { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%230A0A0F'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23FF2D20'/%3E%3Cstop offset='100%25' stop-color='%23FFD700'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolygon points='96,10 182,53 182,139 96,182 10,139 10,53' fill='url(%23g)'/%3E%3Ctext x='96' y='118' text-anchor='middle' font-size='80' fill='%23000'>%E2%9A%A1%3C/text%3E%3C/svg%3E", sizes: "192x192", type: "image/svg+xml", purpose: "any maskable" },
+      { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230A0A0F'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23FF2D20'/%3E%3Cstop offset='100%25' stop-color='%23FFD700'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolygon points='256,20 492,140 492,372 256,492 20,372 20,140' fill='url(%23g)'/%3E%3Ctext x='256' y='320' text-anchor='middle' font-size='220' fill='%23000'>%E2%9A%A1%3C/text%3E%3C/svg%3E", sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }
+    ]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
+  document.getElementById('manifest-link').href = URL.createObjectURL(blob);
+})();
+</script>
+<style>
+  :root {
+    --bg: #0A0A0F;
+    --surface: #12121A;
+    --card: #1A1A26;
+    --border: #2A2A3E;
+    --red: #FF2D20;
+    --red-dim: #991a15;
+    --gold: #FFD700;
+    --gold-dim: #B8960C;
+    --text: #E8E8F0;
+    --muted: #6B6B8A;
+    --green: #00FF88;
+    --orange: #FF8C00;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── ANIMATED BACKGROUND ── */
+  #canvas-bg {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0; pointer-events: none;
+  }
+
+  .content { position: relative; z-index: 1; }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(180deg, rgba(10,10,15,0.98) 0%, rgba(10,10,15,0.85) 100%);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,45,32,0.3);
+    padding: 0 2rem;
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px;
+  }
+
+  .logo {
+    display: flex; align-items: center; gap: 14px;
+  }
+
+  .logo-icon {
+    width: 46px; height: 46px;
+    background: linear-gradient(135deg, var(--red), var(--gold));
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    animation: pulse-logo 2s ease-in-out infinite;
+    box-shadow: 0 0 20px rgba(255,45,32,0.5);
+  }
+
+  @keyframes pulse-logo {
+    0%, 100% { box-shadow: 0 0 20px rgba(255,45,32,0.5); }
+    50% { box-shadow: 0 0 40px rgba(255,45,32,0.9), 0 0 60px rgba(255,215,0,0.3); }
+  }
+
+  .logo-text h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.1rem; font-weight: 900;
+    background: linear-gradient(90deg, var(--red), var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: 2px;
+  }
+  .logo-text p { font-size: 0.65rem; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; }
+
+  nav { display: flex; gap: 6px; }
+  nav button {
+    background: transparent; border: none; color: var(--muted);
+    padding: 8px 16px; border-radius: 6px; cursor: pointer;
+    font-size: 0.82rem; font-family: 'Inter', sans-serif;
+    transition: all 0.2s; letter-spacing: 0.5px;
+  }
+  nav button:hover, nav button.active {
+    background: rgba(255,45,32,0.15); color: var(--red);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 4rem 2rem 3rem;
+    text-align: center;
+    background: radial-gradient(ellipse at 50% 0%, rgba(255,45,32,0.12) 0%, transparent 60%);
+  }
+
+  .hero-label {
+    font-size: 0.72rem; letter-spacing: 4px; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 1rem;
+  }
+
+  .hero h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900; line-height: 1.1;
+    background: linear-gradient(135deg, #fff 30%, var(--gold) 70%, var(--red) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+  }
+
+  .hero p { color: var(--muted); font-size: 0.95rem; max-width: 500px; margin: 0 auto 2rem; }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: flex; justify-content: center; gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+    max-width: 700px; margin: 0 auto 3rem;
+  }
+
+  .stat {
+    flex: 1; padding: 1rem; text-align: center;
+    border-right: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+  }
+  .stat:last-child { border-right: none; }
+  .stat-val {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.6rem; font-weight: 700; color: var(--gold);
+  }
+  .stat-lbl { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+  /* ── MAIN LAYOUT ── */
+  main {
+    max-width: 1300px; margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+  }
+
+  /* ── TABS ── */
+  .tab-bar {
+    display: flex; gap: 4px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 4px; margin-bottom: 2rem;
+  }
+
+  .tab {
+    flex: 1; padding: 10px;
+    background: transparent; border: none; border-radius: 7px;
+    color: var(--muted); cursor: pointer; font-size: 0.82rem;
+    font-family: 'Inter', sans-serif; font-weight: 500;
+    transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .tab.active {
+    background: linear-gradient(135deg, var(--red), #CC2018);
+    color: #fff; box-shadow: 0 4px 15px rgba(255,45,32,0.4);
+  }
+
+  /* ── SECTION ── */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 1.5rem;
+  }
+
+  .card-title {
+    font-family: 'Orbitron', monospace; font-size: 0.85rem;
+    font-weight: 700; color: var(--gold); letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* ── FORM ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+
+  label { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.5px; text-transform: uppercase; }
+
+  input, select, textarea {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); padding: 10px 14px;
+    font-size: 0.9rem; font-family: 'Inter', sans-serif;
+    transition: border-color 0.2s, box-shadow 0.2s; outline: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--red); box-shadow: 0 0 0 3px rgba(255,45,32,0.12);
+  }
+  select option { background: #1A1A26; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    padding: 11px 24px; border-radius: 8px; border: none;
+    cursor: pointer; font-size: 0.88rem; font-weight: 600;
+    font-family: 'Inter', sans-serif; letter-spacing: 0.5px;
+    transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--red), #CC2018);
+    color: #fff; box-shadow: 0 4px 15px rgba(255,45,32,0.35);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,45,32,0.5); }
+
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+    color: #000; box-shadow: 0 4px 15px rgba(255,215,0,0.3);
+  }
+  .btn-ghost {
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+  }
+  .btn-ghost:hover { border-color: var(--red); color: var(--red); }
+
+  .btn-sm { padding: 6px 14px; font-size: 0.78rem; }
+
+  /* ── MEMBER CARDS ── */
+  #members-list {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .member-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 1.2rem; position: relative; overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .member-card:hover { transform: translateY(-3px); border-color: rgba(255,45,32,0.4); }
+
+  .member-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--red), var(--gold));
+  }
+
+  .member-card.expiring-soon::before { background: linear-gradient(90deg, var(--orange), var(--gold)); }
+  .member-card.expired::before { background: var(--muted); }
+
+  .mc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+
+  .mc-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--red), var(--gold));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 1.1rem; color: #000;
+  }
+
+  .mc-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 2px; }
+  .mc-phone { font-size: 0.78rem; color: var(--muted); }
+
+  .badge {
+    font-size: 0.68rem; padding: 3px 10px; border-radius: 20px;
+    font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .badge-active { background: rgba(0,255,136,0.15); color: var(--green); }
+  .badge-expiring { background: rgba(255,140,0,0.15); color: var(--orange); }
+  .badge-expired { background: rgba(107,107,138,0.15); color: var(--muted); }
+
+  .mc-details { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem; }
+
+  .mc-detail { }
+  .mc-detail-label { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .mc-detail-value { font-size: 0.82rem; font-weight: 500; margin-top: 2px; }
+
+  .progress-bar {
+    height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 1rem; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 2px;
+    background: linear-gradient(90deg, var(--red), var(--gold));
+    transition: width 0.5s ease;
+  }
+
+  .mc-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  /* ── SEARCH / FILTER ── */
+  .search-bar {
+    display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap;
+  }
+  .search-bar input { flex: 1; min-width: 200px; }
+
+  /* ── EXPIRY TABLE ── */
+  .expiry-section { margin-top: 1.5rem; }
+
+  .expiry-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.9rem 1rem; border-radius: 8px;
+    background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+    margin-bottom: 0.5rem;
+    transition: background 0.2s;
+  }
+  .expiry-item:hover { background: rgba(255,255,255,0.04); }
+
+  .expiry-days {
+    font-family: 'Orbitron', monospace; font-size: 1.4rem; font-weight: 700;
+    min-width: 50px; text-align: center;
+  }
+  .days-1 { color: var(--red); }
+  .days-2 { color: var(--orange); }
+  .days-3 { color: var(--gold); }
+
+  /* ── PLANS GRID ── */
+  .plans-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+
+  .plan-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 1.2rem; text-align: center; position: relative; overflow: hidden;
+  }
+  .plan-card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--red), var(--gold));
+  }
+
+  .plan-name { font-family: 'Orbitron', monospace; font-size: 0.8rem; font-weight: 700; color: var(--gold); }
+  .plan-price { font-size: 1.8rem; font-weight: 700; margin: 0.5rem 0; color: var(--text); }
+  .plan-price span { font-size: 0.75rem; color: var(--muted); }
+  .plan-members { font-size: 0.75rem; color: var(--muted); }
+
+  /* ── SETTINGS ── */
+  .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);
+    z-index: 200; display: flex; align-items: center; justify-content: center;
+    padding: 1rem;
+  }
+  .modal {
+    background: var(--card); border: 1px solid rgba(255,45,32,0.4);
+    border-radius: 16px; padding: 2rem; width: 100%; max-width: 560px;
+    max-height: 90vh; overflow-y: auto;
+    box-shadow: 0 0 60px rgba(255,45,32,0.2);
+    position: relative;
+  }
+  .modal-close {
+    position: absolute; top: 1rem; right: 1rem;
+    background: transparent; border: none; color: var(--muted);
+    font-size: 1.3rem; cursor: pointer;
+  }
+
+  /* ── TOAST ── */
+  .toast-container {
+    position: fixed; bottom: 2rem; right: 2rem;
+    z-index: 999; display: flex; flex-direction: column; gap: 0.5rem;
+  }
+  .toast {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 0.9rem 1.2rem; font-size: 0.85rem; min-width: 260px;
+    display: flex; align-items: center; gap: 10px;
+    animation: slide-in 0.3s ease;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  }
+  .toast.success { border-color: rgba(0,255,136,0.4); }
+  .toast.error { border-color: rgba(255,45,32,0.4); }
+  .toast.info { border-color: rgba(255,215,0,0.4); }
+  @keyframes slide-in { from { transform: translateX(100%); opacity: 0; } }
+
+  /* ── WHATSAPP REMINDER LOG ── */
+  .reminder-log { margin-top: 1rem; }
+  .reminder-entry {
+    padding: 0.7rem 1rem; background: rgba(0,255,136,0.05);
+    border: 1px solid rgba(0,255,136,0.15); border-radius: 8px; margin-bottom: 0.4rem;
+    font-size: 0.8rem; display: flex; align-items: center; gap: 10px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    header { padding: 0 1rem; }
+    .form-grid { grid-template-columns: 1fr; }
+    .settings-grid { grid-template-columns: 1fr; }
+    nav { display: none; }
+    .stats-bar { flex-wrap: wrap; }
+  }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+  .empty-state {
+    text-align: center; padding: 3rem 1rem;
+    color: var(--muted);
+  }
+  .empty-state .es-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
+  .empty-state p { font-size: 0.9rem; }
+
+  select { width: 100%; }
+</style>
+</head>
+<body>
+
+<canvas id="canvas-bg"></canvas>
+
+<div class="content">
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">⚡</div>
+    <div class="logo-text">
+      <h1>AVENGERS FITNESS</h1>
+      <p>Unisex Gym · Management</p>
+    </div>
+  </div>
+  <nav>
+    <button class="active" onclick="showSection('dashboard')">Dashboard</button>
+    <button onclick="showSection('members')">Members</button>
+    <button onclick="showSection('reminders')">Reminders</button>
+    <button onclick="showSection('plans')">Plans</button>
+    <button onclick="showSection('automation')">🤖 Auto</button>
+    <button onclick="showSection('settings')">Settings</button>
+  </nav>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">⚡ Avengers Fitness Management System</div>
+  <h2>Manage. Track.<br>Dominate.</h2>
+  <p>Complete gym management — members, plans, auto-reminders & data exports in one place.</p>
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-val" id="stat-total">0</div>
+      <div class="stat-lbl">Total Members</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="stat-active" style="color:var(--green)">0</div>
+      <div class="stat-lbl">Active</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="stat-expiring" style="color:var(--orange)">0</div>
+      <div class="stat-lbl">Expiring Soon</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="stat-expired" style="color:var(--muted)">0</div>
+      <div class="stat-lbl">Expired</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- TAB BAR -->
+  <div class="tab-bar">
+    <button class="tab active" onclick="showSection('dashboard')">📊 Dashboard</button>
+    <button class="tab" onclick="showSection('members')">👥 Members</button>
+    <button class="tab" onclick="showSection('reminders')">🔔 Reminders</button>
+    <button class="tab" onclick="showSection('plans')">💪 Plans</button>
+    <button class="tab" onclick="showSection('automation')">🤖 Make.com</button>
+    <button class="tab" onclick="showSection('settings')">⚙️ Settings</button>
+  </div>
+
+  <!-- ── DASHBOARD ── -->
+  <div class="section active" id="section-dashboard">
+    <div class="two-col">
+      <!-- Expiring Soon -->
+      <div class="card">
+        <div class="card-title">⚠️ Expiring in 3 Days</div>
+        <div id="expiry-3" class="expiry-section"></div>
+      </div>
+      <!-- Quick Add -->
+      <div class="card">
+        <div class="card-title">⚡ Quick Add Member</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="q-name" placeholder="Member name">
+          </div>
+          <div class="form-group">
+            <label>WhatsApp Number</label>
+            <input type="tel" id="q-phone" placeholder="e.g. 9876543210">
+          </div>
+          <div class="form-group">
+            <label>Plan</label>
+            <select id="q-plan"></select>
+          </div>
+          <div class="form-group">
+            <label>Start Date</label>
+            <input type="date" id="q-start">
+          </div>
+        </div>
+        <div style="margin-top:1rem; display:flex; gap:8px;">
+          <button class="btn btn-primary" onclick="quickAddMember()">⚡ Add Member</button>
+          <button class="btn btn-ghost" onclick="showSection('members')">View All</button>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Recent Members -->
+    <div class="card" style="margin-top:0">
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>👥 Recent Members</span>
+        <button class="btn btn-gold btn-sm" onclick="sendDailyReport()">📧 Send Daily Report</button>
+      </div>
+      <div id="recent-members-list"></div>
+    </div>
+  </div>
+
+  <!-- ── MEMBERS ── -->
+  <div class="section" id="section-members">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <h2 style="font-family:'Orbitron',monospace;font-size:1.1rem;color:var(--gold);">ALL MEMBERS</h2>
+        <p style="font-size:0.8rem;color:var(--muted);margin-top:4px;">Manage your gym family</p>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-primary" onclick="openAddModal()">+ Add Member</button>
+        <button class="btn btn-gold" onclick="exportCSV()">📥 Export CSV</button>
+      </div>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="🔍 Search by name or phone..." oninput="renderMembers()">
+      <select onchange="renderMembers()" id="filter-status" style="min-width:140px;">
+        <option value="">All Status</option>
+        <option value="active">Active</option>
+        <option value="expiring">Expiring Soon</option>
+        <option value="expired">Expired</option>
+      </select>
+      <select onchange="renderMembers()" id="filter-plan" style="min-width:140px;">
+        <option value="">All Plans</option>
+      </select>
+    </div>
+
+    <div id="members-list"></div>
+  </div>
+
+  <!-- ── REMINDERS ── -->
+  <div class="section" id="section-reminders">
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">🔔 Auto WhatsApp Reminders</div>
+        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;">
+          Reminders are automatically sent 3, 2, and 1 day before plan expiry via WhatsApp. Click a member's "Send Reminder" button or use the bulk action below.
+        </p>
+
+        <div style="background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.2);border-radius:10px;padding:1rem;margin-bottom:1rem;">
+          <div style="font-weight:600;margin-bottom:0.5rem;color:var(--green);font-size:0.85rem;">✅ Today's Auto-Reminders</div>
+          <div id="auto-reminders-today"></div>
+        </div>
+
+        <button class="btn btn-primary" onclick="triggerAllReminders()" style="width:100%">
+          🚀 Send All Pending Reminders Now
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📧 Email Reports</div>
+        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;">
+          Send member data and expiry reports to the gym email address configured in Settings.
+        </p>
+        <div style="display:flex;flex-direction:column;gap:0.75rem;">
+          <button class="btn btn-gold" onclick="sendDailyReport()">📊 Send Daily Expiry Report</button>
+          <button class="btn btn-ghost" onclick="sendFullMemberReport()">👥 Send Full Member List</button>
+          <button class="btn btn-ghost" onclick="sendWeeklyReport()">📅 Send Weekly Summary</button>
+        </div>
+        <hr class="divider">
+        <div style="font-size:0.75rem;color:var(--muted);">
+          Reports go to: <span id="report-email-display" style="color:var(--gold);">Not configured</span><br>
+          <a href="#" onclick="showSection('settings')" style="color:var(--red);font-size:0.75rem;">Configure in Settings →</a>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <div class="card">
+      <div class="card-title">📝 Reminder Log</div>
+      <div id="reminder-log-list">
+        <div class="empty-state">
+          <div class="es-icon">📭</div>
+          <p>No reminders sent yet. Trigger reminders to see the log here.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PLANS ── -->
+  <div class="section" id="section-plans">
+    <div class="two-col" style="margin-bottom:1.5rem;">
+      <div class="card">
+        <div class="card-title">➕ Add / Edit Plan</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Plan Name</label>
+            <input type="text" id="plan-name" placeholder="e.g. Monthly Basic">
+          </div>
+          <div class="form-group">
+            <label>Duration (days)</label>
+            <input type="number" id="plan-days" placeholder="30" min="1">
+          </div>
+          <div class="form-group">
+            <label>Price (₹)</label>
+            <input type="number" id="plan-price" placeholder="1500" min="0">
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <input type="text" id="plan-desc" placeholder="e.g. Full access, all equipment">
+          </div>
+        </div>
+        <div style="margin-top:1rem;">
+          <button class="btn btn-primary" onclick="addPlan()">+ Add Plan</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📊 Plan Stats</div>
+        <div id="plan-stats"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">💪 All Plans</div>
+      <div class="plans-grid" id="plans-grid"></div>
+    </div>
+  </div>
+
+  <!-- ── AUTOMATION (Make.com) ── -->
+  <div class="section" id="section-automation">
+
+    <!-- Top banner -->
+    <div style="background:linear-gradient(135deg,rgba(0,200,100,0.12),rgba(0,120,255,0.08));border:1px solid rgba(0,200,100,0.3);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.2rem;">
+      <div style="font-size:2.5rem;">🤖</div>
+      <div>
+        <div style="font-family:'Orbitron',monospace;font-weight:700;color:#00C864;font-size:0.95rem;letter-spacing:1px;">MAKE.COM AUTO REMINDERS — FULLY FREE</div>
+        <div style="font-size:0.82rem;color:var(--muted);margin-top:4px;">Ek baar setup karo — phir website kholo ya na kholo, WhatsApp reminders khud jaate rahenge 3, 2, 1 din pehle. Zero coding.</div>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-bottom:1.5rem;">
+
+      <!-- STEP 1: Export webhook data -->
+      <div class="card">
+        <div class="card-title" style="color:#00C864;">📤 Step 1 — Data Export (Google Sheet)</div>
+        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;">
+          Make.com ko tumhara member data chahiye. Sabse aasaan tarika: <strong style="color:var(--text);">Google Sheets</strong>. Neeche se apna data export karo aur Google Sheets mein paste karo.
+        </p>
+        <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:8px;padding:1rem;margin-bottom:1rem;font-size:0.8rem;color:var(--muted);">
+          <div style="color:var(--gold);font-weight:600;margin-bottom:6px;">📋 Required Google Sheet Columns:</div>
+          name | phone | plan | expiry_date | days_left | status
+        </div>
+        <button class="btn btn-gold" onclick="exportForMake()" style="width:100%">
+          📥 Export Expiring Members (CSV for Google Sheets)
+        </button>
+        <div style="font-size:0.72rem;color:var(--muted);margin-top:0.75rem;text-align:center;">
+          Ye sirf 1–7 din mein expire hone waale members export karega
+        </div>
+      </div>
+
+      <!-- Webhook URL input -->
+      <div class="card">
+        <div class="card-title" style="color:#00C864;">🔗 Step 2 — Make.com Webhook URL</div>
+        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;">
+          Make.com pe scenario banane ke baad jo <strong style="color:var(--text);">Webhook URL</strong> mile, use yahan paste karo. Phir website se directly trigger ho sakta hai.
+        </p>
+        <div class="form-group" style="margin-bottom:1rem;">
+          <label>Your Make.com Webhook URL</label>
+          <input type="url" id="make-webhook-url" placeholder="https://hook.make.com/xxxxxxxxxxxxx" oninput="saveMakeUrl()">
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-primary" onclick="testWebhook()" style="flex:1">🧪 Test Webhook</button>
+          <button class="btn btn-ghost" onclick="triggerMakeWebhook()" style="flex:1">🚀 Send Now</button>
+        </div>
+        <div id="webhook-status" style="margin-top:0.75rem;font-size:0.78rem;color:var(--muted);"></div>
+      </div>
+    </div>
+
+    <!-- STEP BY STEP GUIDE -->
+    <div class="card">
+      <div class="card-title">📖 Make.com Setup Guide — Step by Step</div>
+
+      <div style="display:flex;flex-direction:column;gap:0;">
+
+        <!-- Step A -->
+        <div style="display:flex;gap:1rem;padding:1.2rem 0;border-bottom:1px solid var(--border);">
+          <div style="min-width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#00C864,#007A3D);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:#000;flex-shrink:0;">1</div>
+          <div>
+            <div style="font-weight:600;margin-bottom:4px;">Make.com pe Account Banao (Free)</div>
+            <div style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;">make.com pe jaao → Sign up with Google → Free plan select karo (1000 operations/month free — teri gym ke liye kaafi hai)</div>
+            <a href="https://make.com" target="_blank" class="btn btn-sm btn-ghost" style="color:#00C864;border-color:#00C864;">🔗 make.com kholna</a>
+          </div>
+        </div>
+
+        <!-- Step B -->
+        <div style="display:flex;gap:1rem;padding:1.2rem 0;border-bottom:1px solid var(--border);">
+          <div style="min-width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#00C864,#007A3D);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:#000;flex-shrink:0;">2</div>
+          <div>
+            <div style="font-weight:600;margin-bottom:4px;">Google Sheet Banao</div>
+            <div style="font-size:0.8rem;color:var(--muted);">
+              Google Sheets mein ek nayi sheet banao. Row 1 mein ye headers daalo:<br>
+              <code style="background:rgba(255,255,255,0.08);padding:4px 8px;border-radius:4px;font-size:0.78rem;margin-top:6px;display:inline-block;">name | phone | plan | expiry_date | days_left | status</code><br><br>
+              Phir website se <strong style="color:var(--gold);">"Export CSV"</strong> button dabao → file kholo → data copy karo → sheet mein paste karo.<br><br>
+              <strong style="color:#00C864;">⚡ Daily basis pe:</strong> Website se export karo → sheet update karo. (Ya Make.com mein Google Sheets trigger lagao jo automatic read kare)
+            </div>
+          </div>
+        </div>
+
+        <!-- Step C -->
+        <div style="display:flex;gap:1rem;padding:1.2rem 0;border-bottom:1px solid var(--border);">
+          <div style="min-width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#00C864,#007A3D);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:#000;flex-shrink:0;">3</div>
+          <div>
+            <div style="font-weight:600;margin-bottom:4px;">Make.com Scenario Banao</div>
+            <div style="font-size:0.8rem;color:var(--muted);">
+              Make.com pe jaao → <strong>Create a new Scenario</strong> → + button dabaao → Search karo <strong>"Schedule"</strong> → <strong>"Every Day"</strong> select karo (time: subah 9 baje)<br><br>
+              Ye scenario har roz subah 9 baje khud chalega.
+            </div>
+          </div>
+        </div>
+
+        <!-- Step D -->
+        <div style="display:flex;gap:1rem;padding:1.2rem 0;border-bottom:1px solid var(--border);">
+          <div style="min-width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#00C864,#007A3D);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:#000;flex-shrink:0;">4</div>
+          <div>
+            <div style="font-weight:600;margin-bottom:4px;">Google Sheets Module Jodo</div>
+            <div style="font-size:0.8rem;color:var(--muted);">
+              Schedule ke baad <strong>+</strong> dabaao → Search <strong>"Google Sheets"</strong> → <strong>"Search Rows"</strong> select karo<br><br>
+              • Apni sheet connect karo<br>
+              • Filter lagao: <code style="background:rgba(255,255,255,0.08);padding:2px 6px;border-radius:3px;">days_left</code> column = <code style="background:rgba(255,255,255,0.08);padding:2px 6px;border-radius:3px;">3</code> (ya 2, ya 1)<br>
+              • Teen alag branches banao — ek 3d ke liye, ek 2d, ek 1d
+            </div>
+          </div>
+        </div>
+
+        <!-- Step E -->
+        <div style="display:flex;gap:1rem;padding:1.2rem 0;border-bottom:1px solid var(--border);">
+          <div style="min-width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#00C864,#007A3D);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:#000;flex-shrink:0;">5</div>
+          <div>
+            <div style="font-weight:600;margin-bottom:4px;">WhatsApp Module Lagao (CallMeBot — FREE)</div>
+            <div style="font-size:0.8rem;color:var(--muted);">
+              Google Sheets ke baad <strong>+</strong> dabaao → Search <strong>"HTTP"</strong> → <strong>"Make a Request"</strong><br><br>
+              URL daalo:<br>
+              <code style="background:rgba(255,255,255,0.06);border:1px solid var(--border);padding:8px;border-radius:6px;font-size:0.72rem;display:block;margin-top:6px;word-break:break-all;">https://api.callmebot.com/whatsapp.php?phone={{phone}}&text=Hi+{{name}}!+Your+{{plan}}+plan+expires+in+{{days_left}}+days.+Renew+at+Avengers+Fitness!&apikey=YOUR_API_KEY</code>
+              <br>
+              <strong style="color:var(--gold);">CallMeBot setup (FREE):</strong><br>
+              1. Apne WhatsApp se <strong>+34 644 57 23 74</strong> ko message karo: <code>I allow callmebot to send me messages</code><br>
+              2. Wo tumhe ek API Key bhejenge<br>
+              3. Wo key URL mein daalo<br>
+              4. Member ka phone number automatically Google Sheet se aayega
+            </div>
+          </div>
+        </div>
+
+        <!-- Step F -->
+        <div style="display:flex;gap:1rem;padding:1.2rem 0;border-bottom:1px solid var(--border);">
+          <div style="min-width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#00C864,#007A3D);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:#000;flex-shrink:0;">6</div>
+          <div>
+            <div style="font-weight:600;margin-bottom:4px;">Email Report bhi Lagao (Optional)</div>
+            <div style="font-size:0.8rem;color:var(--muted);">
+              Usi scenario mein ek aur branch → <strong>"Email"</strong> module → Gmail ya koi bhi email<br><br>
+              Subject: <code style="background:rgba(255,255,255,0.08);padding:2px 6px;border-radius:3px;">Daily Expiry Report — Avengers Fitness</code><br>
+              Body mein Google Sheet ka sara data automatically aa jaayega
+            </div>
+          </div>
+        </div>
+
+        <!-- Step G -->
+        <div style="display:flex;gap:1rem;padding:1.2rem 0;">
+          <div style="min-width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#FFD700,#B8960C);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:#000;flex-shrink:0;">✓</div>
+          <div>
+            <div style="font-weight:600;margin-bottom:4px;color:var(--gold);">Turn ON karo — Done! 🎉</div>
+            <div style="font-size:0.8rem;color:var(--muted);">
+              Scenario ke neeche <strong>ON/OFF toggle</strong> hai — use ON karo.<br>
+              Ab har roz subah 9 baje Make.com khud:<br>
+              ✅ Google Sheet check karega<br>
+              ✅ Expiring members ko WhatsApp bhejega (3d, 2d, 1d before)<br>
+              ✅ Tujhe email report bhejega<br><br>
+              <strong style="color:var(--green);">Tu website bhi na khole — phir bhi reminders jaate rahenge! 🔥</strong>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Alternative: Direct Webhook trigger -->
+    <div class="card">
+      <div class="card-title">⚡ Advanced: Website se Direct Trigger</div>
+      <div class="two-col">
+        <div>
+          <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;">
+            Agar website regularly kholte ho toh Make.com mein <strong style="color:var(--text);">Webhook trigger</strong> bhi laga sakte ho. Phir website se ek button dabaate hi Make.com ko signal jaayega aur usne apni taraf se WhatsApp bhejna shuru kar dega.
+          </p>
+          <div style="font-size:0.78rem;color:var(--muted);">
+            Make.com → New Scenario → Webhooks → Custom Webhook → URL copy karo → Upar paste karo
+          </div>
+        </div>
+        <div>
+          <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:1rem;">
+            <div style="font-size:0.75rem;color:var(--muted);margin-bottom:8px;">Webhook se kya data jayega:</div>
+            <pre style="font-size:0.72rem;color:var(--green);overflow-x:auto;">{
+  "members": [
+    {
+      "name": "Rahul Sharma",
+      "phone": "9876543210",
+      "plan": "Monthly",
+      "days_left": 3,
+      "expiry": "16 Jun 2026"
+    }
+  ],
+  "gym": "Avengers Fitness",
+  "date": "2026-06-13"
+}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── SETTINGS ── -->
+  <div class="section" id="section-settings">
+    <div class="settings-grid">
+      <div class="card">
+        <div class="card-title">🏋️ Gym Info</div>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Gym Name</label>
+            <input type="text" id="set-gymname" value="Avengers Fitness Unisex Gym">
+          </div>
+          <div class="form-group full">
+            <label>Address</label>
+            <textarea id="set-address" rows="2" placeholder="Gym address..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Owner Phone</label>
+            <input type="tel" id="set-phone" placeholder="9876543210">
+          </div>
+          <div class="form-group">
+            <label>Report Email</label>
+            <input type="email" id="set-email" placeholder="gym@email.com" oninput="updateEmailDisplay()">
+          </div>
+          <div class="form-group full">
+            <label>🔗 Google Apps Script URL <span style="color:var(--green);font-size:0.7rem;">(member add hote hi sheet + email auto)</span></label>
+            <input type="url" id="set-script-url" placeholder="https://script.google.com/macros/s/xxxxx/exec">
+          </div>
+          <div class="form-group full" id="script-status-box" style="display:none;">
+            <div style="background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.25);border-radius:8px;padding:0.75rem;font-size:0.78rem;color:var(--green);">
+              ✅ Apps Script connected — member add hote hi Google Sheet update hoga aur admin ko email jaayega!
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:1rem;">
+          <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">💬 WhatsApp Message Templates</div>
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+          <div class="form-group">
+            <label>3 Days Before Expiry</label>
+            <textarea id="tpl-3" rows="3"
+              placeholder="Hi {name}! Your {plan} plan at Avengers Fitness expires in 3 days on {date}. Renew now to keep up your momentum! 💪 Call: {phone}">Hi {name}! 💪 Your *{plan}* plan at *Avengers Fitness* is expiring in *3 days* on {date}. Renew today to keep your fitness journey going! Contact us: {phone}</textarea>
+          </div>
+          <div class="form-group">
+            <label>2 Days Before Expiry</label>
+            <textarea id="tpl-2" rows="3"
+              placeholder="">Hi {name}! ⚡ Only *2 days* left on your *{plan}* plan at *Avengers Fitness* (expires {date}). Don't break your streak — renew now! Contact: {phone}</textarea>
+          </div>
+          <div class="form-group">
+            <label>1 Day Before Expiry</label>
+            <textarea id="tpl-1" rows="3"
+              placeholder="">🚨 {name}, your *{plan}* plan at *Avengers Fitness* expires *TOMORROW* ({date})! Renew immediately to stay in the game. Call/WhatsApp: {phone}</textarea>
+          </div>
+        </div>
+        <div style="margin-top:1rem;">
+          <button class="btn btn-gold" onclick="saveTemplates()">💾 Save Templates</button>
+        </div>
+        <p style="font-size:0.72rem;color:var(--muted);margin-top:0.75rem;">
+          Variables: {name}, {plan}, {date}, {phone}, {price}
+        </p>
+      </div>
+    </div>
+
+    <!-- Apps Script Setup Guide -->
+    <hr class="divider">
+    <div class="card" style="border-color:rgba(0,255,136,0.25);">
+      <div class="card-title" style="color:var(--green);">🚀 Google Apps Script — One-Time Setup (5 min)</div>
+      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1.5rem;">
+        Ye ek baar karne ke baad <strong style="color:var(--text);">member add/edit/delete karte hi</strong> Google Sheet automatically update hogi aur admin ko email jaayega. Kisi bhi device se website khole — data hamesha sync rahega.
+      </p>
+      <div style="display:flex;flex-direction:column;gap:0;">
+
+        <div style="display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--border);">
+          <div style="min-width:32px;height:32px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;color:#000;flex-shrink:0;">1</div>
+          <div>
+            <div style="font-weight:600;font-size:0.88rem;margin-bottom:4px;">Google Sheet banao</div>
+            <div style="font-size:0.8rem;color:var(--muted);">
+              <a href="https://sheets.new" target="_blank" style="color:var(--gold);">sheets.new</a> kholao → Spreadsheet ka title rakho <strong style="color:var(--text);">"Avengers Fitness"</strong>. Bas itna — baaki Apps Script khud handle kar lega.
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--border);">
+          <div style="min-width:32px;height:32px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;color:#000;flex-shrink:0;">2</div>
+          <div>
+            <div style="font-weight:600;font-size:0.88rem;margin-bottom:4px;">Apps Script kholao</div>
+            <div style="font-size:0.8rem;color:var(--muted);">
+              Sheet ke andar upar menu mein: <strong style="color:var(--text);">Extensions → Apps Script</strong> → Nayi tab mein editor khulega.
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--border);">
+          <div style="min-width:32px;height:32px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;color:#000;flex-shrink:0;">3</div>
+          <div>
+            <div style="font-weight:600;font-size:0.88rem;margin-bottom:4px;">Code paste karo</div>
+            <div style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;">
+              Saath mein diya <strong style="color:var(--gold);">avengers-apps-script.js</strong> file download karo → pura code copy karo → editor mein existing code hata ke paste karo → <strong style="color:var(--red);">Line 8 mein apna Gmail daalo</strong> → 💾 Save (Ctrl+S).
+            </div>
+            <div style="background:rgba(255,45,32,0.08);border:1px solid rgba(255,45,32,0.3);border-radius:6px;padding:8px;font-size:0.75rem;color:#ff6b5b;">
+              ⚠️ const ADMIN_EMAIL = "YOUR_EMAIL@gmail.com"; — yahan apna actual email zaroori daalo
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--border);">
+          <div style="min-width:32px;height:32px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;color:#000;flex-shrink:0;">4</div>
+          <div>
+            <div style="font-weight:600;font-size:0.88rem;margin-bottom:4px;">Deploy karo — Web App</div>
+            <div style="font-size:0.8rem;color:var(--muted);">
+              Upar right: <strong style="color:var(--text);">Deploy → New Deployment</strong> → Type: <strong style="color:var(--text);">Web App</strong><br>
+              • Execute as: <strong style="color:var(--text);">Me (apna account)</strong><br>
+              • Who has access: <strong style="color:var(--text);">Anyone</strong><br>
+              → <strong style="color:var(--green);">Deploy</strong> → Google permissions maangega → Allow → <strong style="color:var(--gold);">Web App URL copy karo</strong>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--border);">
+          <div style="min-width:32px;height:32px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;color:#000;flex-shrink:0;">5</div>
+          <div>
+            <div style="font-weight:600;font-size:0.88rem;margin-bottom:4px;">URL yahan paste karo → Save</div>
+            <div style="font-size:0.8rem;color:var(--muted);">
+              Upar <strong style="color:var(--text);">"Google Apps Script URL"</strong> wale field mein URL paste karo → <strong style="color:var(--gold);">Save Settings</strong> dabaao.<br><br>
+              <strong style="color:var(--green);">✅ Done! Ab se member add hote hi — Sheet update + Admin email automatic!</strong>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:1rem;padding:1rem 0;">
+          <div style="min-width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-dim));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;color:#000;flex-shrink:0;">6</div>
+          <div>
+            <div style="font-weight:600;font-size:0.88rem;margin-bottom:4px;color:var(--gold);">⚡ Bonus — Daily Auto Email (Expiry Check)</div>
+            <div style="font-size:0.8rem;color:var(--muted);">
+              Apps Script mein baayi taraf <strong style="color:var(--text);">⏰ Triggers icon</strong> → <strong>Add Trigger</strong><br>
+              • Function to run: <code style="background:rgba(255,255,255,0.08);padding:2px 6px;border-radius:3px;color:var(--green);">dailyReminderCheck</code><br>
+              • Event source: <strong style="color:var(--text);">Time-driven → Day timer → 9am to 10am</strong><br>
+              → Save → Har roz subah 9 baje automatic expiry check + email aayegi! 🔥
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</main>
+</div>
+
+<!-- MODAL: Add / Edit Member -->
+<div class="modal-overlay" id="member-modal" style="display:none;">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="card-title" style="margin-bottom:1.5rem;" id="modal-title">➕ Add New Member</div>
+    <input type="hidden" id="edit-id">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Full Name *</label>
+        <input type="text" id="m-name" placeholder="Member's full name">
+      </div>
+      <div class="form-group">
+        <label>WhatsApp Number *</label>
+        <input type="tel" id="m-phone" placeholder="10-digit number">
+      </div>
+      <div class="form-group">
+        <label>Email (optional)</label>
+        <input type="email" id="m-email" placeholder="member@email.com">
+      </div>
+      <div class="form-group">
+        <label>Gender</label>
+        <select id="m-gender">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Plan *</label>
+        <select id="m-plan"></select>
+      </div>
+      <div class="form-group">
+        <label>Join Date / Plan Start *</label>
+        <input type="date" id="m-start">
+      </div>
+      <div class="form-group full">
+        <label>Notes</label>
+        <textarea id="m-notes" rows="2" placeholder="Any special notes..."></textarea>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:1.5rem;">
+      <button class="btn btn-primary" onclick="saveMember()">💾 Save Member</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+// ══════════════════════════════════════
+// DATA STORE (localStorage)
+// ══════════════════════════════════════
+
+const DB = {
+  members: JSON.parse(localStorage.getItem('af_members') || '[]'),
+  plans: JSON.parse(localStorage.getItem('af_plans') || JSON.stringify([
+    { id: 'p1', name: 'Monthly Basic', days: 30, price: 1500, desc: 'Full access, all equipment' },
+    { id: 'p2', name: 'Quarterly', days: 90, price: 4000, desc: '3 month package — save ₹500' },
+    { id: 'p3', name: 'Half Yearly', days: 180, price: 7000, desc: '6 month power plan' },
+    { id: 'p4', name: 'Annual', days: 365, price: 12000, desc: 'Full year — best value!' },
+  ])),
+  settings: JSON.parse(localStorage.getItem('af_settings') || '{}'),
+  reminderLog: JSON.parse(localStorage.getItem('af_reminder_log') || '[]'),
+};
+
+function save() {
+  localStorage.setItem('af_members', JSON.stringify(DB.members));
+  localStorage.setItem('af_plans', JSON.stringify(DB.plans));
+  localStorage.setItem('af_settings', JSON.stringify(DB.settings));
+  localStorage.setItem('af_reminder_log', JSON.stringify(DB.reminderLog));
+}
+
+// ══════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════
+
+function getPlan(planId) { return DB.plans.find(p => p.id === planId) || {}; }
+
+function getMemberExpiry(m) {
+  const plan = getPlan(m.planId);
+  const start = new Date(m.startDate);
+  const expiry = new Date(start);
+  expiry.setDate(expiry.getDate() + (plan.days || 30));
+  return expiry;
+}
+
+function getDaysLeft(m) {
+  const expiry = getMemberExpiry(m);
+  const today = new Date(); today.setHours(0,0,0,0);
+  return Math.ceil((expiry - today) / (1000 * 86400));
+}
+
+function getStatus(m) {
+  const d = getDaysLeft(m);
+  if (d < 0) return 'expired';
+  if (d <= 3) return 'expiring';
+  return 'active';
+}
+
+function fmtDate(d) {
+  return new Date(d).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+}
+
+function initials(name) {
+  return name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+}
+
+function genId() { return 'm' + Date.now() + Math.random().toString(36).slice(2,5); }
+
+// ══════════════════════════════════════
+// NAV / TABS
+// ══════════════════════════════════════
+
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(t => t.classList.remove('active'));
+  document.getElementById('section-' + name)?.classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => {
+    if (t.textContent.toLowerCase().includes(name.slice(0,4))) t.classList.add('active');
+  });
+  if (name === 'members') renderMembers();
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'reminders') renderReminders();
+  if (name === 'plans') renderPlans();
+  if (name === 'settings') loadSettings();
+  if (name === 'automation') {
+    const el = document.getElementById('make-webhook-url');
+    if (el && DB.settings.makeWebhookUrl) el.value = DB.settings.makeWebhookUrl;
+  }
+}
+
+// ══════════════════════════════════════
+// STATS
+// ══════════════════════════════════════
+
+function updateStats() {
+  const all = DB.members;
+  document.getElementById('stat-total').textContent = all.length;
+  document.getElementById('stat-active').textContent = all.filter(m=>getStatus(m)==='active').length;
+  document.getElementById('stat-expiring').textContent = all.filter(m=>getStatus(m)==='expiring').length;
+  document.getElementById('stat-expired').textContent = all.filter(m=>getStatus(m)==='expired').length;
+}
+
+// ══════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════
+
+function renderDashboard() {
+  updateStats();
+
+  // Populate quick-add plan dropdown
+  populatePlanDropdown('q-plan');
+  document.getElementById('q-start').value = new Date().toISOString().split('T')[0];
+
+  // Expiring in 3 days
+  const expEl = document.getElementById('expiry-3');
+  const expiring = DB.members.filter(m => {
+    const d = getDaysLeft(m); return d >= 0 && d <= 3;
+  }).sort((a,b) => getDaysLeft(a) - getDaysLeft(b));
+
+  if (!expiring.length) {
+    expEl.innerHTML = `<div class="empty-state"><div class="es-icon">✅</div><p>No members expiring in 3 days!</p></div>`;
+  } else {
+    expEl.innerHTML = expiring.map(m => {
+      const d = getDaysLeft(m);
+      return `<div class="expiry-item">
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:0.9rem;">${m.name}</div>
+          <div style="font-size:0.75rem;color:var(--muted);">${getPlan(m.planId).name || ''} · ${m.phone}</div>
+        </div>
+        <div class="expiry-days days-${d}">${d}d</div>
+        <button class="btn btn-sm btn-primary" style="margin-left:8px;" onclick="sendWhatsApp('${m.id}', ${d})">📱</button>
+      </div>`;
+    }).join('');
+  }
+
+  // Recent members (last 5)
+  const recent = [...DB.members].reverse().slice(0, 5);
+  const rEl = document.getElementById('recent-members-list');
+  if (!recent.length) {
+    rEl.innerHTML = `<div class="empty-state"><div class="es-icon">👥</div><p>No members yet. Add your first member!</p></div>`;
+  } else {
+    rEl.innerHTML = recent.map(m => miniCard(m)).join('');
+  }
+}
+
+function miniCard(m) {
+  const status = getStatus(m);
+  const d = getDaysLeft(m);
+  const plan = getPlan(m.planId);
+  const bdgClass = status === 'active' ? 'badge-active' : status === 'expiring' ? 'badge-expiring' : 'badge-expired';
+  const bdgTxt = status === 'active' ? 'Active' : status === 'expiring' ? `${d}d left` : 'Expired';
+  return `<div style="display:flex;align-items:center;gap:12px;padding:0.75rem 0;border-bottom:1px solid var(--border);">
+    <div class="mc-avatar">${initials(m.name)}</div>
+    <div style="flex:1">
+      <div style="font-weight:600;font-size:0.9rem;">${m.name}</div>
+      <div style="font-size:0.75rem;color:var(--muted);">${plan.name || '-'} · Expires ${fmtDate(getMemberExpiry(m))}</div>
+    </div>
+    <span class="badge ${bdgClass}">${bdgTxt}</span>
+    <button class="btn btn-sm btn-primary" onclick="sendWhatsApp('${m.id}', ${d})">📱 Remind</button>
+  </div>`;
+}
+
+function quickAddMember() {
+  const name = document.getElementById('q-name').value.trim();
+  const phone = document.getElementById('q-phone').value.trim();
+  const planId = document.getElementById('q-plan').value;
+  const start = document.getElementById('q-start').value;
+  if (!name || !phone || !planId || !start) { toast('Fill all quick-add fields!', 'error'); return; }
+  const memberId = genId();
+  const m = { id: memberId, name, phone, email: '', gender: 'other', planId, startDate: start, notes: '' };
+  DB.members.push(m);
+  save();
+  toast(`✅ ${name} added! Sheet sync ho raha hai...`, 'success');
+  document.getElementById('q-name').value = '';
+  document.getElementById('q-phone').value = '';
+  renderDashboard();
+  const plan = getPlan(planId);
+  const expiryDate = getMemberExpiry(m).toISOString().split('T')[0];
+  syncToSheet('add_member', { id: memberId, name, phone, email: '', gender: 'other', planId, startDate: start, notes: '', planName: plan.name, planDays: plan.days, price: plan.price, expiryDate });
+}
+
+// ══════════════════════════════════════
+// MEMBERS
+// ══════════════════════════════════════
+
+function renderMembers() {
+  updateStats();
+  const query = (document.getElementById('search-input')?.value || '').toLowerCase();
+  const statusF = document.getElementById('filter-status')?.value || '';
+  const planF = document.getElementById('filter-plan')?.value || '';
+  populatePlanDropdown('filter-plan', true);
+
+  let list = DB.members.filter(m => {
+    const matchQ = !query || m.name.toLowerCase().includes(query) || m.phone.includes(query);
+    const matchS = !statusF || getStatus(m) === statusF;
+    const matchP = !planF || m.planId === planF;
+    return matchQ && matchS && matchP;
+  });
+
+  const el = document.getElementById('members-list');
+  if (!list.length) {
+    el.innerHTML = `<div class="empty-state"><div class="es-icon">👥</div><p>No members found.</p></div>`;
+    return;
+  }
+
+  el.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;">
+    ${list.map(m => memberCard(m)).join('')}
+  </div>`;
+}
+
+function memberCard(m) {
+  const plan = getPlan(m.planId);
+  const expiry = getMemberExpiry(m);
+  const d = getDaysLeft(m);
+  const status = getStatus(m);
+  const progress = Math.max(0, Math.min(100, (d / (plan.days || 30)) * 100));
+  const bdgClass = status === 'active' ? 'badge-active' : status === 'expiring' ? 'badge-expiring' : 'badge-expired';
+  const bdgTxt = status === 'active' ? 'Active' : status === 'expiring' ? `Expiring: ${d}d` : 'Expired';
+
+  return `<div class="member-card ${status === 'expiring' ? 'expiring-soon' : ''} ${status === 'expired' ? 'expired' : ''}">
+    <div class="mc-header">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="mc-avatar">${initials(m.name)}</div>
+        <div>
+          <div class="mc-name">${m.name}</div>
+          <div class="mc-phone">📱 ${m.phone}</div>
+        </div>
+      </div>
+      <span class="badge ${bdgClass}">${bdgTxt}</span>
+    </div>
+    <div class="mc-details">
+      <div class="mc-detail">
+        <div class="mc-detail-label">Plan</div>
+        <div class="mc-detail-value" style="color:var(--gold)">${plan.name || '-'}</div>
+      </div>
+      <div class="mc-detail">
+        <div class="mc-detail-label">Price</div>
+        <div class="mc-detail-value">₹${plan.price || '-'}</div>
+      </div>
+      <div class="mc-detail">
+        <div class="mc-detail-label">Start Date</div>
+        <div class="mc-detail-value">${fmtDate(m.startDate)}</div>
+      </div>
+      <div class="mc-detail">
+        <div class="mc-detail-label">Expires</div>
+        <div class="mc-detail-value" style="color:${status==='expired'?'var(--muted)':status==='expiring'?'var(--orange)':'var(--green)'}">${fmtDate(expiry)}</div>
+      </div>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" style="width:${progress}%;${status==='expired'?'background:var(--muted)':status==='expiring'?'background:linear-gradient(90deg,var(--orange),var(--gold))':''}"></div>
+    </div>
+    <div class="mc-actions">
+      <button class="btn btn-sm btn-primary" onclick="sendWhatsApp('${m.id}', ${d})">📱 Remind</button>
+      <button class="btn btn-sm btn-gold" onclick="renewMember('${m.id}')">🔄 Renew</button>
+      <button class="btn btn-sm btn-ghost" onclick="editMember('${m.id}')">✏️ Edit</button>
+      <button class="btn btn-sm btn-ghost" style="color:var(--red);" onclick="deleteMember('${m.id}')">🗑️</button>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════
+// MODAL
+// ══════════════════════════════════════
+
+function openAddModal() {
+  document.getElementById('modal-title').textContent = '➕ Add New Member';
+  document.getElementById('edit-id').value = '';
+  ['m-name','m-phone','m-email','m-notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('m-gender').value = 'male';
+  document.getElementById('m-start').value = new Date().toISOString().split('T')[0];
+  populatePlanDropdown('m-plan');
+  document.getElementById('member-modal').style.display = 'flex';
+}
+
+function editMember(id) {
+  const m = DB.members.find(m => m.id === id);
+  if (!m) return;
+  document.getElementById('modal-title').textContent = '✏️ Edit Member';
+  document.getElementById('edit-id').value = id;
+  document.getElementById('m-name').value = m.name;
+  document.getElementById('m-phone').value = m.phone;
+  document.getElementById('m-email').value = m.email || '';
+  document.getElementById('m-gender').value = m.gender || 'male';
+  document.getElementById('m-start').value = m.startDate;
+  document.getElementById('m-notes').value = m.notes || '';
+  populatePlanDropdown('m-plan');
+  document.getElementById('m-plan').value = m.planId;
+  document.getElementById('member-modal').style.display = 'flex';
+}
+
+function closeModal() { document.getElementById('member-modal').style.display = 'none'; }
+
+function saveMember() {
+  const name = document.getElementById('m-name').value.trim();
+  const phone = document.getElementById('m-phone').value.trim();
+  const planId = document.getElementById('m-plan').value;
+  const start = document.getElementById('m-start').value;
+  if (!name || !phone || !planId || !start) { toast('Please fill required fields!', 'error'); return; }
+
+  const editId = document.getElementById('edit-id').value;
+  const plan = getPlan(planId);
+  const data = {
+    name, phone,
+    email: document.getElementById('m-email').value.trim(),
+    gender: document.getElementById('m-gender').value,
+    planId, startDate: start,
+    notes: document.getElementById('m-notes').value.trim(),
+  };
+
+  let memberId;
+  if (editId) {
+    const idx = DB.members.findIndex(m => m.id === editId);
+    DB.members[idx] = { ...DB.members[idx], ...data };
+    memberId = editId;
+    toast(`✅ ${name} updated!`, 'success');
+  } else {
+    memberId = genId();
+    DB.members.push({ id: memberId, ...data });
+    toast(`✅ ${name} added! Sheet sync ho raha hai...`, 'success');
+  }
+  save(); closeModal(); renderMembers(); updateStats();
+
+  // ── Sync to Google Sheets + Email ──
+  const expiryDate = getMemberExpiry({ planId, startDate: start }).toISOString().split('T')[0];
+  syncToSheet(editId ? 'update_member' : 'add_member', {
+    id: memberId, ...data,
+    planName: plan.name || '',
+    planDays: plan.days || 0,
+    price: plan.price || 0,
+    expiryDate,
+  });
+}
+
+async function syncToSheet(action, memberData) {
+  const url = DB.settings.appsScriptUrl;
+  if (!url) return; // silently skip if not configured
+
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' }, // Apps Script needs text/plain for CORS
+      body: JSON.stringify({ action, ...memberData })
+    });
+    const json = await res.json();
+    if (json.ok) {
+      toast('📊 Google Sheet updated ✅', 'success');
+    }
+  } catch(e) {
+    // CORS se error aa sakta hai but data pohunch jaata hai
+    toast('📊 Sheet sync bheja gaya (background mein)', 'info');
+  }
+}
+
+function deleteMember(id) {
+  const m = DB.members.find(m => m.id === id);
+  if (!m) return;
+  if (!confirm(`Delete ${m.name}? This cannot be undone.`)) return;
+  DB.members = DB.members.filter(m => m.id !== id);
+  save(); renderMembers(); updateStats();
+  toast(`🗑️ ${m.name} removed`, 'info');
+  syncToSheet('delete_member', { id });
+}
+
+function renewMember(id) {
+  const m = DB.members.find(m => m.id === id);
+  if (!m) return;
+  m.startDate = new Date().toISOString().split('T')[0];
+  save(); renderMembers(); updateStats();
+  toast(`🔄 ${m.name}'s plan renewed from today!`, 'success');
+  const plan = getPlan(m.planId);
+  const expiryDate = getMemberExpiry(m).toISOString().split('T')[0];
+  syncToSheet('update_member', { ...m, planName: plan.name, planDays: plan.days, price: plan.price, expiryDate });
+}
+
+// ══════════════════════════════════════
+// PLANS
+// ══════════════════════════════════════
+
+function populatePlanDropdown(id, keepFirst = false) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const first = keepFirst ? el.options[0]?.outerHTML : '';
+  el.innerHTML = first + DB.plans.map(p =>
+    `<option value="${p.id}">${p.name} (${p.days}d — ₹${p.price})</option>`
+  ).join('');
+}
+
+function addPlan() {
+  const name = document.getElementById('plan-name').value.trim();
+  const days = parseInt(document.getElementById('plan-days').value);
+  const price = parseInt(document.getElementById('plan-price').value);
+  const desc = document.getElementById('plan-desc').value.trim();
+  if (!name || !days || !price) { toast('Fill all plan fields!', 'error'); return; }
+  DB.plans.push({ id: 'p' + Date.now(), name, days, price, desc });
+  save();
+  ['plan-name','plan-days','plan-price','plan-desc'].forEach(id => document.getElementById(id).value = '');
+  renderPlans(); toast(`✅ Plan "${name}" added!`, 'success');
+}
+
+function deletePlan(id) {
+  if (DB.members.some(m => m.planId === id)) {
+    toast('Cannot delete — members are on this plan!', 'error'); return;
+  }
+  DB.plans = DB.plans.filter(p => p.id !== id);
+  save(); renderPlans(); toast('Plan removed', 'info');
+}
+
+function renderPlans() {
+  const grid = document.getElementById('plans-grid');
+  if (!DB.plans.length) { grid.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;">No plans yet.</p>'; return; }
+  grid.innerHTML = DB.plans.map(p => {
+    const count = DB.members.filter(m => m.planId === p.id).length;
+    return `<div class="plan-card">
+      <div class="plan-name">${p.name}</div>
+      <div class="plan-price">₹${p.price}<span> / ${p.days}d</span></div>
+      <div class="plan-members">${p.desc || ''}</div>
+      <div class="plan-members" style="margin-top:6px;color:var(--gold)">${count} member${count !== 1 ? 's' : ''}</div>
+      <button class="btn btn-ghost btn-sm" style="margin-top:10px;color:var(--red);" onclick="deletePlan('${p.id}')">Remove</button>
+    </div>`;
+  }).join('');
+
+  // Plan stats
+  const statsEl = document.getElementById('plan-stats');
+  statsEl.innerHTML = DB.plans.map(p => {
+    const count = DB.members.filter(m => m.planId === p.id).length;
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:1px solid var(--border);">
+      <span style="font-size:0.85rem;">${p.name}</span>
+      <span style="font-family:'Orbitron',monospace;font-weight:700;color:var(--gold);">${count}</span>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════
+// WHATSAPP REMINDERS
+// ══════════════════════════════════════
+
+function buildMessage(memberId, daysLeft) {
+  const m = DB.members.find(m => m.id === memberId);
+  if (!m) return '';
+  const plan = getPlan(m.planId);
+  const expiry = getMemberExpiry(m);
+  const settings = DB.settings;
+  const tplId = daysLeft === 1 ? 'tpl-1' : daysLeft === 2 ? 'tpl-2' : 'tpl-3';
+  const tplEl = document.getElementById(tplId);
+  let tpl = (settings['tpl-' + (daysLeft <= 3 ? daysLeft : 3)] || tplEl?.value || `Hi {name}! Your {plan} plan expires in ${daysLeft} days ({date}). Renew at Avengers Fitness!`);
+  return tpl
+    .replace(/{name}/g, m.name)
+    .replace(/{plan}/g, plan.name || '')
+    .replace(/{date}/g, fmtDate(expiry))
+    .replace(/{phone}/g, settings.phone || '')
+    .replace(/{price}/g, plan.price || '');
+}
+
+function sendWhatsApp(memberId, daysLeft) {
+  const m = DB.members.find(m => m.id === memberId);
+  if (!m) return;
+  const msg = buildMessage(memberId, daysLeft);
+  const phone = m.phone.replace(/\D/g, '');
+  const fullPhone = phone.startsWith('91') ? phone : '91' + phone;
+  const url = `https://wa.me/${fullPhone}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+
+  // Log it
+  DB.reminderLog.unshift({
+    ts: new Date().toISOString(),
+    memberId,
+    memberName: m.name,
+    phone: m.phone,
+    daysLeft,
+    type: 'whatsapp',
+    msg: msg.substring(0, 80) + '...'
+  });
+  if (DB.reminderLog.length > 100) DB.reminderLog.pop();
+  save();
+  toast(`📱 WhatsApp opened for ${m.name}!`, 'success');
+  renderReminders();
+}
+
+function triggerAllReminders() {
+  const toRemind = DB.members.filter(m => {
+    const d = getDaysLeft(m);
+    return d >= 1 && d <= 3;
+  });
+  if (!toRemind.length) { toast('No members needing reminders today!', 'info'); return; }
+  toRemind.forEach(m => {
+    const d = getDaysLeft(m);
+    setTimeout(() => sendWhatsApp(m.id, d), 500);
+  });
+  toast(`🚀 Sending ${toRemind.length} reminders...`, 'success');
+}
+
+// ══════════════════════════════════════
+// REMINDERS PAGE
+// ══════════════════════════════════════
+
+function renderReminders() {
+  // Today's auto reminders
+  const toRemind = DB.members.filter(m => {
+    const d = getDaysLeft(m); return d >= 1 && d <= 3;
+  });
+  const arEl = document.getElementById('auto-reminders-today');
+  if (!toRemind.length) {
+    arEl.innerHTML = '<p style="font-size:0.8rem;color:var(--muted);">No reminders needed today. 🎉</p>';
+  } else {
+    arEl.innerHTML = toRemind.map(m => {
+      const d = getDaysLeft(m);
+      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+        <div>
+          <div style="font-size:0.85rem;font-weight:600;">${m.name}</div>
+          <div style="font-size:0.72rem;color:var(--muted);">${m.phone} · ${d} day${d!==1?'s':''} left</div>
+        </div>
+        <button class="btn btn-sm btn-primary" onclick="sendWhatsApp('${m.id}', ${d})">📱 Send</button>
+      </div>`;
+    }).join('');
+  }
+
+  // Email display
+  const emailEl = document.getElementById('report-email-display');
+  if (emailEl) emailEl.textContent = DB.settings.email || 'Not configured';
+
+  // Log
+  const logEl = document.getElementById('reminder-log-list');
+  if (!DB.reminderLog.length) {
+    logEl.innerHTML = `<div class="empty-state"><div class="es-icon">📭</div><p>No reminders sent yet.</p></div>`;
+    return;
+  }
+  logEl.innerHTML = DB.reminderLog.slice(0, 30).map(r => {
+    const ts = new Date(r.ts).toLocaleString('en-IN');
+    return `<div class="reminder-entry">
+      <span style="font-size:1.1rem;">📱</span>
+      <div style="flex:1">
+        <div style="font-weight:600;font-size:0.82rem;">${r.memberName} · ${r.phone}</div>
+        <div style="font-size:0.72rem;color:var(--muted);">${ts} · ${r.daysLeft}d before expiry</div>
+      </div>
+      <span style="font-size:0.7rem;color:var(--green);">Sent</span>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════
+// EMAIL REPORTS (opens email client)
+// ══════════════════════════════════════
+
+function buildMemberTable() {
+  return DB.members.map(m => {
+    const plan = getPlan(m.planId);
+    const d = getDaysLeft(m);
+    const status = getStatus(m);
+    return `${m.name} | ${m.phone} | ${plan.name} | ₹${plan.price} | ${fmtDate(m.startDate)} | ${fmtDate(getMemberExpiry(m))} | ${status.toUpperCase()} | ${d < 0 ? 'Expired' : d + 'd left'}`;
+  }).join('\n');
+}
+
+function sendDailyReport() {
+  const email = DB.settings.email;
+  if (!email) { toast('Please set gym email in Settings first!', 'error'); showSection('settings'); return; }
+  const expiring = DB.members.filter(m => {
+    const d = getDaysLeft(m); return d >= 0 && d <= 3;
+  });
+  const expired = DB.members.filter(m => getDaysLeft(m) < 0);
+  const subject = `Avengers Fitness — Daily Expiry Report ${new Date().toLocaleDateString('en-IN')}`;
+  const body = `AVENGERS FITNESS — DAILY REPORT
+Date: ${new Date().toLocaleString('en-IN')}
+
+EXPIRING IN 3 DAYS (${expiring.length} members):
+${expiring.length ? expiring.map(m => `• ${m.name} | ${m.phone} | Expires: ${fmtDate(getMemberExpiry(m))} | Days Left: ${getDaysLeft(m)}`).join('\n') : 'None'}
+
+RECENTLY EXPIRED (${expired.length} members):
+${expired.length ? expired.map(m => `• ${m.name} | ${m.phone} | Expired: ${fmtDate(getMemberExpiry(m))}`).join('\n') : 'None'}
+
+STATS:
+Total Members: ${DB.members.length}
+Active: ${DB.members.filter(m=>getStatus(m)==='active').length}
+Expiring Soon: ${expiring.length}
+Expired: ${expired.length}
+
+— Avengers Fitness Management System`;
+  window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
+  toast('📧 Email client opened with daily report!', 'success');
+}
+
+function sendFullMemberReport() {
+  const email = DB.settings.email;
+  if (!email) { toast('Please set gym email in Settings first!', 'error'); showSection('settings'); return; }
+  const subject = `Avengers Fitness — Full Member List ${new Date().toLocaleDateString('en-IN')}`;
+  const body = `AVENGERS FITNESS — FULL MEMBER LIST
+Date: ${new Date().toLocaleString('en-IN')}
+Total Members: ${DB.members.length}
+
+NAME | PHONE | PLAN | PRICE | START | EXPIRY | STATUS | DAYS LEFT
+${'─'.repeat(80)}
+${buildMemberTable()}
+
+— Avengers Fitness Management System`;
+  window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
+  toast('📧 Full member list email opened!', 'success');
+}
+
+function sendWeeklyReport() {
+  const email = DB.settings.email;
+  if (!email) { toast('Please set gym email in Settings first!', 'error'); showSection('settings'); return; }
+  const weeklyNew = DB.members.filter(m => {
+    const d = new Date(m.startDate);
+    const now = new Date();
+    return (now - d) / 86400000 <= 7;
+  });
+  const subject = `Avengers Fitness — Weekly Summary ${new Date().toLocaleDateString('en-IN')}`;
+  const body = `AVENGERS FITNESS — WEEKLY SUMMARY
+Week ending: ${new Date().toLocaleDateString('en-IN')}
+
+📊 OVERVIEW
+Total Members: ${DB.members.length}
+Active: ${DB.members.filter(m=>getStatus(m)==='active').length}
+Expiring (3d): ${DB.members.filter(m=>getStatus(m)==='expiring').length}
+Expired: ${DB.members.filter(m=>getStatus(m)==='expired').length}
+
+🆕 NEW MEMBERS THIS WEEK (${weeklyNew.length}):
+${weeklyNew.length ? weeklyNew.map(m => `• ${m.name} | ${m.phone} | ${getPlan(m.planId).name}`).join('\n') : 'None'}
+
+— Avengers Fitness Management System`;
+  window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
+  toast('📧 Weekly summary email opened!', 'success');
+}
+
+// ══════════════════════════════════════
+// EXPORT CSV
+// ══════════════════════════════════════
+
+function exportCSV() {
+  const headers = ['Name','Phone','Email','Gender','Plan','Price','Start Date','Expiry Date','Status','Days Left','Notes'];
+  const rows = DB.members.map(m => {
+    const plan = getPlan(m.planId);
+    const d = getDaysLeft(m);
+    return [m.name, m.phone, m.email||'', m.gender||'', plan.name||'', plan.price||'', m.startDate, getMemberExpiry(m).toISOString().split('T')[0], getStatus(m), d, m.notes||''];
+  });
+  const csv = [headers, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `avengers-fitness-members-${new Date().toISOString().split('T')[0]}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+  toast('📥 CSV exported!', 'success');
+}
+
+// ══════════════════════════════════════
+// SETTINGS
+// ══════════════════════════════════════
+
+function loadSettings() {
+  const s = DB.settings;
+  document.getElementById('set-gymname').value = s.gymname || 'Avengers Fitness Unisex Gym';
+  document.getElementById('set-address').value = s.address || '';
+  document.getElementById('set-phone').value = s.phone || '';
+  document.getElementById('set-email').value = s.email || '';
+  document.getElementById('set-script-url').value = s.appsScriptUrl || '';
+  if (s.appsScriptUrl) document.getElementById('script-status-box').style.display = 'block';
+  ['tpl-1','tpl-2','tpl-3'].forEach(id => {
+    if (s[id]) document.getElementById(id).value = s[id];
+  });
+  updateEmailDisplay();
+}
+
+function saveSettings() {
+  DB.settings.gymname = document.getElementById('set-gymname').value;
+  DB.settings.address = document.getElementById('set-address').value;
+  DB.settings.phone = document.getElementById('set-phone').value;
+  DB.settings.email = document.getElementById('set-email').value;
+  DB.settings.appsScriptUrl = document.getElementById('set-script-url').value.trim();
+  save(); updateEmailDisplay();
+  const box = document.getElementById('script-status-box');
+  if (DB.settings.appsScriptUrl) { box.style.display = 'block'; }
+  else { box.style.display = 'none'; }
+  toast('✅ Settings saved!', 'success');
+}
+
+function saveTemplates() {
+  ['tpl-1','tpl-2','tpl-3'].forEach(id => {
+    DB.settings[id] = document.getElementById(id).value;
+  });
+  save(); toast('✅ Templates saved!', 'success');
+}
+
+function updateEmailDisplay() {
+  const email = document.getElementById('set-email')?.value || DB.settings.email || '';
+  const el = document.getElementById('report-email-display');
+  if (el) el.textContent = email || 'Not configured';
+}
+
+// ══════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════
+
+function toast(msg, type = 'info') {
+  const c = document.getElementById('toast-container');
+  const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span>${icons[type]||'ℹ️'}</span> ${msg}`;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+// ══════════════════════════════════════
+// AUTO REMINDER CHECKER (runs on load)
+// ══════════════════════════════════════
+
+function checkAndAutoRemind() {
+  const today = new Date().toISOString().split('T')[0];
+  const lastCheck = DB.settings.lastReminderCheck;
+  if (lastCheck === today) return; // Already checked today
+  DB.settings.lastReminderCheck = today;
+  save();
+  const toRemind = DB.members.filter(m => {
+    const d = getDaysLeft(m); return d >= 1 && d <= 3;
+  });
+  if (toRemind.length > 0) {
+    setTimeout(() => {
+      toast(`⚡ ${toRemind.length} member(s) expiring within 3 days! Go to Reminders tab.`, 'info');
+    }, 2000);
+  }
+}
+
+// ══════════════════════════════════════
+// MAKE.COM AUTOMATION
+// ══════════════════════════════════════
+
+function exportForMake() {
+  // Export only members expiring in 1-7 days
+  const expiring = DB.members.filter(m => {
+    const d = getDaysLeft(m); return d >= 1 && d <= 7;
+  });
+  if (!expiring.length) { toast('Koi member 7 din mein expire nahi ho raha!', 'info'); return; }
+
+  const headers = ['name','phone','plan','expiry_date','days_left','status'];
+  const rows = expiring.map(m => {
+    const plan = getPlan(m.planId);
+    const d = getDaysLeft(m);
+    return [
+      m.name,
+      m.phone,
+      plan.name || '',
+      getMemberExpiry(m).toISOString().split('T')[0],
+      d,
+      getStatus(m)
+    ];
+  });
+  const csv = [headers, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `make-expiring-members-${new Date().toISOString().split('T')[0]}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+  toast(`📥 ${expiring.length} expiring members exported for Make.com!`, 'success');
+}
+
+function saveMakeUrl() {
+  DB.settings.makeWebhookUrl = document.getElementById('make-webhook-url').value;
+  save();
+}
+
+async function testWebhook() {
+  const url = document.getElementById('make-webhook-url').value.trim();
+  if (!url) { toast('Pehle Webhook URL daalo!', 'error'); return; }
+  const statusEl = document.getElementById('webhook-status');
+  statusEl.textContent = '⏳ Testing...';
+  statusEl.style.color = 'var(--muted)';
+  try {
+    await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      mode: 'no-cors',
+      body: JSON.stringify({ test: true, gym: 'Avengers Fitness', time: new Date().toISOString() })
+    });
+    statusEl.textContent = '✅ Webhook triggered! Make.com mein check karo ki data aaya ya nahi.';
+    statusEl.style.color = 'var(--green)';
+    toast('✅ Test webhook sent!', 'success');
+  } catch(e) {
+    statusEl.textContent = '⚠️ CORS error — ye normal hai! Make.com pe check karo, data pahunch gaya hoga.';
+    statusEl.style.color = 'var(--orange)';
+  }
+}
+
+async function triggerMakeWebhook() {
+  const url = (document.getElementById('make-webhook-url')?.value || DB.settings.makeWebhookUrl || '').trim();
+  if (!url) { toast('Settings mein Make.com Webhook URL daalo!', 'error'); showSection('automation'); return; }
+
+  const expiring = DB.members.filter(m => {
+    const d = getDaysLeft(m); return d >= 1 && d <= 3;
+  });
+  if (!expiring.length) { toast('Koi member 3 din mein expire nahi ho raha!', 'info'); return; }
+
+  const payload = {
+    gym: DB.settings.gymname || 'Avengers Fitness',
+    date: new Date().toISOString().split('T')[0],
+    ownerPhone: DB.settings.phone || '',
+    members: expiring.map(m => ({
+      name: m.name,
+      phone: m.phone,
+      plan: getPlan(m.planId).name || '',
+      days_left: getDaysLeft(m),
+      expiry: fmtDate(getMemberExpiry(m))
+    }))
+  };
+
+  try {
+    await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      mode: 'no-cors',
+      body: JSON.stringify(payload)
+    });
+    // Log it
+    DB.reminderLog.unshift({
+      ts: new Date().toISOString(),
+      memberId: 'bulk',
+      memberName: `${expiring.length} members`,
+      phone: 'via Make.com',
+      daysLeft: '1-3',
+      type: 'make-webhook',
+      msg: `Webhook triggered for ${expiring.length} members`
+    });
+    save();
+    toast(`🚀 Make.com ko ${expiring.length} members ka data bheja!`, 'success');
+  } catch(e) {
+    toast('⚠️ Bhej diya — CORS error normal hai, Make.com check karo!', 'info');
+  }
+}
+
+
+
+(function() {
+  const canvas = document.getElementById('canvas-bg');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], lines = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * W;
+      this.y = Math.random() * H;
+      this.vx = (Math.random() - 0.5) * 0.5;
+      this.vy = (Math.random() - 0.5) * 0.5;
+      this.r = Math.random() * 2 + 0.5;
+      this.alpha = Math.random() * 0.5 + 0.1;
+      this.color = Math.random() > 0.7 ? '#FFD700' : '#FF2D20';
+    }
+    update() {
+      this.x += this.vx; this.y += this.vy;
+      if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = this.color;
+      ctx.globalAlpha = this.alpha;
+      ctx.fill();
+    }
+  }
+
+  function init() {
+    resize();
+    particles = Array.from({length: 80}, () => new Particle());
+  }
+
+  function connectParticles() {
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = '#FF2D20';
+          ctx.globalAlpha = 0.07 * (1 - dist / 120);
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  // Hexagonal grid overlay
+  function drawHexGrid() {
+    const size = 40;
+    const cols = Math.ceil(W / (size * 1.7)) + 1;
+    const rows = Math.ceil(H / (size * 1.5)) + 1;
+    ctx.strokeStyle = 'rgba(255, 45, 32, 0.04)';
+    ctx.lineWidth = 0.5;
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        const x = col * size * 1.73 + (row % 2 ? size * 0.87 : 0);
+        const y = row * size * 1.5;
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+          const angle = (Math.PI / 180) * (60 * i - 30);
+          const px = x + size * Math.cos(angle);
+          const py = y + size * Math.sin(angle);
+          i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.globalAlpha = 1;
+        ctx.stroke();
+      }
+    }
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    drawHexGrid();
+    particles.forEach(p => { p.update(); p.draw(); });
+    connectParticles();
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(animate);
+  }
+
+  window.addEventListener('resize', resize);
+  init(); animate();
+})();
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', () => {
+  populatePlanDropdown('q-plan');
+  populatePlanDropdown('m-plan');
+  renderDashboard();
+  checkAndAutoRemind();
+  loadSettings();
+  updateStats();
+});
+
+// Close modal on overlay click
+document.getElementById('member-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ══════════════════════════════════════
+// PWA — INSTALL PROMPT
+// ══════════════════════════════════════
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('pwa-install-bar').style.display = 'flex';
+});
+
+function installPWA() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(result => {
+      if (result.outcome === 'accepted') {
+        toast('✅ App install ho raha hai!', 'success');
+        document.getElementById('pwa-install-bar').style.display = 'none';
+      }
+      deferredPrompt = null;
+    });
+  }
+}
+
+window.addEventListener('appinstalled', () => {
+  toast('🎉 Avengers Fitness App install ho gaya!', 'success');
+  document.getElementById('pwa-install-bar').style.display = 'none';
+});
+
+// Service Worker registration via blob (works for single HTML file)
+if ('serviceWorker' in navigator) {
+  const swCode = `
+const CACHE_NAME = 'avengers-fitness-v1';
+self.addEventListener('install', e => {
+  self.skipWaiting();
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(clients.claim());
+});
+self.addEventListener('fetch', e => {
+  e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+});`;
+  const blob = new Blob([swCode], {type: 'application/javascript'});
+  const swUrl = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).catch(() => {});
+}
+</script>
+
+<!-- PWA Install Banner -->
+<div id="pwa-install-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;background:linear-gradient(135deg,#1A1A26,#12121A);border-top:1px solid rgba(255,45,32,0.4);padding:1rem 1.5rem;align-items:center;justify-content:space-between;gap:1rem;box-shadow:0 -8px 30px rgba(0,0,0,0.5);">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div style="width:42px;height:42px;background:linear-gradient(135deg,#FF2D20,#FFD700);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">⚡</div>
+    <div>
+      <div style="font-weight:700;font-size:0.9rem;">Avengers Fitness App Install Karo</div>
+      <div style="font-size:0.75rem;color:#6B6B8A;">Home screen pe add karo — bilkul app jaisi feel</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;flex-shrink:0;">
+    <button onclick="installPWA()" style="background:linear-gradient(135deg,#FF2D20,#CC2018);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.85rem;">📲 Install</button>
+    <button onclick="document.getElementById('pwa-install-bar').style.display='none'" style="background:transparent;border:1px solid #2A2A3E;color:#6B6B8A;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:0.85rem;">✕</button>
+  </div>
+</div>
+
+</body>
+</html>

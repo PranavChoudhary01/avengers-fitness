@@ -1032,6 +1032,15 @@
         <label>Notes</label>
         <textarea id="m-notes" rows="2" placeholder="Any special notes..."></textarea>
       </div>
+      <div class="form-group full">
+        <label>📸 Member Photo (Optional)</label>
+        <div style="display:flex;gap:8px;margin-bottom:8px;">
+          <input type="file" id="m-photo" accept="image/*" style="flex:1;padding:8px;border:1px solid var(--border);border-radius:6px;background:rgba(255,255,255,0.04);color:var(--text);" onchange="previewPhoto()">
+          <button type="button" class="btn btn-gold btn-sm" onclick="document.getElementById('m-photo-camera').click()">📷 Camera</button>
+        </div>
+        <input type="file" id="m-photo-camera" accept="image/*" capture="environment" style="display:none" onchange="previewPhoto()">
+        <img id="m-photo-preview" style="margin-top:8px;max-width:100%;max-height:150px;border-radius:8px;display:none;border:1px solid var(--border);">
+      </div>
     </div>
     <div style="display:flex;gap:8px;margin-top:1.5rem;">
       <button class="btn btn-primary" onclick="saveMember()">💾 Save Member</button>
@@ -1267,6 +1276,7 @@ function memberCard(m) {
       </div>
       <span class="badge ${bdgClass}">${bdgTxt}</span>
     </div>
+    ${m.photo ? `<img src="${m.photo}" style="width:100%;height:180px;object-fit:cover;border-radius:8px;margin:10px 0;display:block;border:1px solid var(--border);">` : ''}
     <div class="mc-details">
       <div class="mc-detail">
         <div class="mc-detail-label">Plan</div>
@@ -1324,10 +1334,45 @@ function editMember(id) {
   document.getElementById('m-notes').value = m.notes || '';
   populatePlanDropdown('m-plan');
   document.getElementById('m-plan').value = m.planId;
+  
+  // Show existing photo if available
+  if (m.photo) {
+    photoBase64 = m.photo;
+    const preview = document.getElementById('m-photo-preview');
+    preview.src = m.photo;
+    preview.style.display = 'block';
+  } else {
+    photoBase64 = '';
+    document.getElementById('m-photo-preview').style.display = 'none';
+  }
+  
   document.getElementById('member-modal').style.display = 'flex';
 }
 
-function closeModal() { document.getElementById('member-modal').style.display = 'none'; }
+function closeModal() { 
+  document.getElementById('member-modal').style.display = 'none'; 
+  photoBase64 = '';
+  document.getElementById('m-photo').value = '';
+  document.getElementById('m-photo-camera').value = '';
+  document.getElementById('m-photo-preview').style.display = 'none';
+}
+
+// ── PHOTO HANDLING ──
+let photoBase64 = '';
+
+function previewPhoto() {
+  const fileInput = document.getElementById('m-photo') || document.getElementById('m-photo-camera');
+  const file = fileInput.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    photoBase64 = e.target.result;
+    const preview = document.getElementById('m-photo-preview');
+    preview.src = photoBase64;
+    preview.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
 
 function saveMember() {
   const name = document.getElementById('m-name').value.trim();
@@ -1344,6 +1389,7 @@ function saveMember() {
     gender: document.getElementById('m-gender').value,
     planId, startDate: start,
     notes: document.getElementById('m-notes').value.trim(),
+    photo: photoBase64 || '', // Add photo
   };
 
   let memberId;
